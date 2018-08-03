@@ -4,6 +4,7 @@ Player = require 'player'
 Target = require 'target'
 Particles = require 'particles'
 Timer = require 'timer'
+Menu = require 'menu'
 
 Circloid = {
    _radiusToDraw = 0,
@@ -11,7 +12,7 @@ Circloid = {
 
 function love.load()
    gDrawFuncs = {
-      ["init"] = _drawInit,
+      ["init"] = Menu.draw,
       ["game"] = _drawGame,
       ["end"] = _drawGameOver,
    }
@@ -24,7 +25,7 @@ function love.draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-   if GameState.state == "game" then
+   if GameState.state == "game" or GameState.state == "init" then
       if key == "a" then
          Player:rotateCounter()
       elseif key == "d" then
@@ -34,33 +35,48 @@ function love.keypressed(key, scancode, isrepeat)
       elseif key == "s" then
          Player:subtractRay()
       end
-   else
+   end
+
+   if GameState.state == "end" then
       if key == "space" then
-         if GameState.state ~= "game" then
-            _resetGame()
-            _restartGame()
-         end
+         _resetGame()
+         _restartGame()
       end
    end
 
-   if Player.rayPosition == Target.rayPosition
+   if GameState.state == "init" and Menu:isReady() then
+      Particles:add(3, {
+                       x = GameState.viewport.width * 0.5,
+                       y = GameState.viewport.height * 0.5,
+                       radius = GameState:getRadius(),
+                       lifespan = 0.6
+      })
+      _resetGame()
+      _restartGame()
+   end
+
+   if GameState.state == "game" then
+      if Player.rayPosition == Target.rayPosition
       and Player.rayCount == Target.rayCount then
          _turnSucceeded()
+      end
    end
 end
 
 function love.update(dt)
-   if gScale ~= 1 then
-      gScale = gScale + (1 - gScale) * 0.25
-      if math.abs(1 - gScale) < 0.01 then
-         gScale = 1
+   if GameState.state == "game" then
+      if gScale ~= 1 then
+         gScale = gScale + (1 - gScale) * 0.25
+         if math.abs(1 - gScale) < 0.01 then
+            gScale = 1
+         end
       end
-   end
-   Circloid._radiusToDraw = Circloid._radiusToDraw + (GameState:getRadius() - Circloid._radiusToDraw) * 0.25
-   Particles:update(dt)
-   Timer:update(dt)
-   if Timer:isExpired() then
-      _turnFailed()
+      Circloid._radiusToDraw = Circloid._radiusToDraw + (GameState:getRadius() - Circloid._radiusToDraw) * 0.25
+      Particles:update(dt)
+      Timer:update(dt)
+      if Timer:isExpired() then
+         _turnFailed()
+      end
    end
 end
 
@@ -82,11 +98,6 @@ function _turnSucceeded()
                     radius = GameState:getRadius(),
                     lifespan = 0.6
    })
-end
-
-function _drawInit()
-   love.graphics.print("WASD", GameState.viewport.width * 0.25, GameState.viewport.height * 0.5)
-   love.graphics.print("<space> to start", GameState.viewport.width * 0.25, GameState.viewport.height * 0.55)
 end
 
 function _drawGameOver()

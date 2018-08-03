@@ -1,6 +1,4 @@
 Player = {
-   centerX = 0,
-   centerY = 0,
    rayPosition = 0,
    rayCount = 0,
 }
@@ -55,10 +53,10 @@ function Player:_drawRay(radius, initialAngle)
    end
    local angle = initialAngle + (((math.pi * 2) / 12) * self.rayPosition)
    love.graphics.line(
-      self.centerX + innerRadius * math.cos(angle),
-      self.centerY + innerRadius * math.sin(angle),
-      self.centerX + outerRadius * math.cos(angle),
-      self.centerY + outerRadius * math.sin(angle)
+      innerRadius * math.cos(angle),
+      innerRadius * math.sin(angle),
+      outerRadius * math.cos(angle),
+      outerRadius * math.sin(angle)
    )
 end
 
