@@ -10,11 +10,11 @@ function Player:reset()
    self.rayCount = 1
 end
 
-function Player:draw(maxRadius)
+function Player:draw(radius)
    love.graphics.setColor(1, 1, 1, 1)
    for idx = 0, self.rayCount - 1 do
       local initialAngle = ((math.pi * 2) / self.rayCount) * idx
-      self:_drawRay(maxRadius, initialAngle)
+      self:_drawRay(radius, initialAngle)
    end
 end
 
@@ -46,12 +46,12 @@ function Player:subtractRay()
    end
 end
 
-function Player:_drawRay(maxRadius, initialAngle)
+function Player:_drawRay(radius, initialAngle)
    local innerRadius, outerRadius
-   innerRadius = maxRadius * 0.2
-   outerRadius = maxRadius * 0.4
+   innerRadius = radius * 0.8
+   outerRadius = radius * 1.6
    if initialAngle ~= 0 then
-      innerRadius = maxRadius * 0.3
+      innerRadius = radius * 1.2
    end
    local angle = initialAngle + (((math.pi * 2) / 12) * self.rayPosition)
    love.graphics.line(

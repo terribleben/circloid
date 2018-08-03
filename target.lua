@@ -10,20 +10,20 @@ function Target:reset()
    self.rayCount = 1
 end
 
-function Target:draw(maxRadius)
+function Target:draw(radius)
    love.graphics.setColor(0, 1, 1, 1)
    for idx = 0, self.rayCount - 1 do
       local initialAngle = ((math.pi * 2) / self.rayCount) * idx
-      self:_drawRay(maxRadius, initialAngle)
+      self:_drawRay(radius, initialAngle)
    end
 end
 
-function Target:_drawRay(maxRadius, initialAngle)
+function Target:_drawRay(radius, initialAngle)
    local innerRadius, outerRadius
-   innerRadius = maxRadius * 0.1
-   outerRadius = maxRadius * 0.3
+   innerRadius = radius * 0.4
+   outerRadius = radius * 1.2
    if initialAngle ~= 0 then
-      innerRadius = maxRadius * 0.25
+      innerRadius = radius
    end
    local angle = initialAngle + (((math.pi * 2) / 12) * self.rayPosition)
    love.graphics.line(

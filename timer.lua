@@ -1,21 +1,28 @@
+GameState = require 'gamestate'
+
 Timer = {
    _timeRemaining = 0,
-   MAX_TIME_REMAINING = 12,
+   _timeScale = 1,
+
+   MAX_TIME_REMAINING = 6,
 }
 
 function Timer:reset()
    self._timeRemaining = self.MAX_TIME_REMAINING
+   self._timeScale = 1
 end
 
-function Timer:addTime()
-   self._timeRemaining = self._timeRemaining + (self.MAX_TIME_REMAINING * 0.1)
-   if self._timeRemaining > self.MAX_TIME_REMAINING then
-      self._timeRemaining = self.MAX_TIME_REMAINING
-   end
+function Timer:turnSucceeded()
+   self._timeRemaining = self.MAX_TIME_REMAINING
+   self._timeScale = self._timeScale + 0.01
+end
+
+function Timer:turnFailed()
+   self._timeRemaining = self.MAX_TIME_REMAINING
 end
 
 function Timer:update(dt)
-   self._timeRemaining = self._timeRemaining - dt
+   self._timeRemaining = self._timeRemaining - (dt * self._timeScale)
    if self._timeRemaining < 0 then
       self._timeRemaining = 0
    end
@@ -25,8 +32,8 @@ function Timer:isExpired()
    return (self._timeRemaining <= 0)
 end
 
-function Timer:draw(viewport)
-   viewport = viewport or { width = 0, height = 0 }
+function Timer:draw()
+   local viewport = GameState.viewport or { width = 0, height = 0 }
 
    local maxNumUnits = 20
    local numUnits = math.ceil((self._timeRemaining / self.MAX_TIME_REMAINING) * maxNumUnits)

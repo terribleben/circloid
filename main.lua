@@ -1,58 +1,69 @@
+-- steps for friday
+--
+-- mechanism:
+---- timer per-move fills up circle
+---- success: circle grows, timer gets faster
+---- failure: circle shrinks
+---- scale difficulty: more variation in keys
+-- menu: turn the key around to start
+-- show timer feedback when you gain time
+-- make score more obvious
+-- more feedback when you move?
+-- rotate circle?
+-- scale circle size w/ level?
+-- combos?
+-- graphical polish
+---- cool backgrounds
+---- intensity near loss
+---- intensity after loss
+
+GameState = require 'gamestate'
 Player = require 'player'
 Target = require 'target'
 Particles = require 'particles'
 Timer = require 'timer'
 
-gScreenWidth = 800
-gScreenHeight = 600
-
-gGameState = "init"
+Circloid = {
+   _radiusToDraw = 0,
+}
 
 function love.load()
-   width, height, flags = love.window.getMode()
-   gScreenWidth = width
-   gScreenHeight = height
    gDrawFuncs = {
       ["init"] = _drawInit,
       ["game"] = _drawGame,
       ["end"] = _drawGameOver,
    }
-   _restartGame()
+   _resetGame()
 end
 
 function love.draw()
-   local drawFunc = gDrawFuncs[gGameState]
+   local drawFunc = gDrawFuncs[GameState.state]
    drawFunc()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-   if key == "a" then
-      Player:rotateCounter()
-   elseif key == "d" then
-      Player:rotateClockwise()
-   elseif key == "w" then
-      Player:addRay()
-   elseif key == "s" then
-      Player:subtractRay()
-   elseif key == "space" then
-      if gGameState ~= "game" then
-         gGameState = "game"
-         _restartGame()
+   if GameState.state == "game" then
+      if key == "a" then
+         Player:rotateCounter()
+      elseif key == "d" then
+         Player:rotateClockwise()
+      elseif key == "w" then
+         Player:addRay()
+      elseif key == "s" then
+         Player:subtractRay()
+      end
+   else
+      if key == "space" then
+         if GameState.state ~= "game" then
+            _resetGame()
+            _restartGame()
+         end
       end
    end
 
    if Player.rayPosition == Target.rayPosition
       and Player.rayCount == Target.rayCount then
-         _computeNewTarget()
-         Timer:addTime()
-         gScore = gScore + 1
-         gScale = 1.1
-         Particles:add(3, {
-                          x = gScreenWidth * 0.5,
-                          y = gScreenHeight * 0.5,
-                          radius = gScreenHeight * 0.25,
-                          lifespan = 0.6
-         })
+         _turnSucceeded()
    end
 end
 
@@ -63,49 +74,74 @@ function love.update(dt)
          gScale = 1
       end
    end
+   Circloid._radiusToDraw = Circloid._radiusToDraw + (GameState:getRadius() - Circloid._radiusToDraw) * 0.25
    Particles:update(dt)
    Timer:update(dt)
    if Timer:isExpired() then
-      if gGameState ~= "end" then
-         gGameState = "end"
-      end
+      _turnFailed()
    end
 end
 
+function _turnFailed()
+   -- remove vitality
+   -- check game over
+   Timer:turnFailed()
+   GameState:turnFailed()
+end
+
+function _turnSucceeded()
+   _computeNewTarget()
+   Timer:turnSucceeded()
+   GameState:turnSucceeded()
+   gScale = 1.1
+   Particles:add(3, {
+                    x = GameState.viewport.width * 0.5,
+                    y = GameState.viewport.height * 0.5,
+                    radius = GameState:getRadius(),
+                    lifespan = 0.6
+   })
+end
+
 function _drawInit()
-   love.graphics.print("WASD", gScreenWidth * 0.25, gScreenHeight * 0.5)
-   love.graphics.print("<space> to start", gScreenWidth * 0.25, gScreenHeight * 0.55)
+   love.graphics.print("WASD", GameState.viewport.width * 0.25, GameState.viewport.height * 0.5)
+   love.graphics.print("<space> to start", GameState.viewport.width * 0.25, GameState.viewport.height * 0.55)
 end
 
 function _drawGameOver()
-   love.graphics.print("GAME OVER", gScreenWidth * 0.25, gScreenHeight * 0.5)
-   love.graphics.print("<space> to restart", gScreenWidth * 0.25, gScreenHeight * 0.55)
+   love.graphics.print("GAME OVER", GameState.viewport.width * 0.25, GameState.viewport.height * 0.5)
+   love.graphics.print("<space> to restart", GameState.viewport.width * 0.25, GameState.viewport.height * 0.55)
 end
 
 function _drawGame()
    love.graphics.setColor(1, 1, 1, 1)
-   local centerX = gScreenWidth * 0.5
-   local centerY = gScreenHeight * 0.5
-   love.graphics.print(tostring(gScore), centerX, centerY)
+   local centerX = GameState.viewport.width * 0.5
+   local centerY = GameState.viewport.height * 0.5
+   local radius = Circloid._radiusToDraw
+   love.graphics.print(tostring(GameState.score), centerX, centerY)
    
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
    love.graphics.scale(gScale, gScale)
-   love.graphics.circle("line", 0, 0, gScreenHeight * 0.25)
-   Player:draw(gScreenHeight)
-   Target:draw(gScreenHeight)
+   love.graphics.circle("line", 0, 0, radius)
+   Player:draw(radius)
+   Target:draw(radius)
    love.graphics.pop()
    
    Particles:draw()
-   Timer:draw({ width = gScreenWidth, height = gScreenHeight})
+   Timer:draw()
 end
 
-function _restartGame()
-   gScore = 0
+function _resetGame()
    gScale = 1
    Player:reset()
    Target:reset()
+   GameState:reset()
    Timer:reset()
+   Circloid._radiusToDraw = GameState:getRadius()
+end
+
+function _restartGame()
+   GameState.state = "game"
    _computeNewTarget()
 end
 
