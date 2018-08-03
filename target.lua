@@ -13,17 +13,22 @@ end
 
 function Target:permute(playerRayPosition, playerRayCount)
    -- (linear: local maxNumRays = 1 + math.floor(GameState.numTurnsSucceeded / 4))
-   local maxNumRays
+   local maxNumRays, pHardMove, isHardMove
    if (GameState.numTurnsSucceeded < 5) then
       maxNumRays = 1
+      pHardMove = 0
    else
-      maxNumRays = math.floor(math.log(GameState.numTurnsSucceeded / 5), 2) + 2
+      maxNumRays = math.floor(math.log(GameState.numTurnsSucceeded / 3.5), 2) + 2
+      pHardMove = 0.1 * maxNumRays
    end
    maxNumRays = math.min(6, maxNumRays)
-   while playerRayPosition == self.rayPosition
-   and playerRayCount == self.rayCount do
-      self.rayPosition = math.random(0, 11)
-      self.rayCount = math.random(1, maxNumRays)
+   isHardMove = (math.random() < pHardMove)
+   while playerRayPosition == self.rayPosition do
+      if isHardMove then
+         self:_makeHardTarget(playerRayPosition, playerRayCount, maxNumRays)
+      else
+         self:_makeRandomTarget(maxNumRays)
+      end
    end
 end
 
@@ -32,6 +37,21 @@ function Target:draw(radius)
    local minorRadii = { inner = radius, outer = radius * 1.2 }
    local majorRadii = { inner = radius * 0.4, outer = radius * 1.2 }
    Ray.drawSet(self.rayPosition, self.rayCount, majorRadii, minorRadii, "inner")
+end
+
+function Target:_makeRandomTarget(maxNumRays)
+   self.rayPosition = math.random(0, 11)
+   self.rayCount = math.random(1, maxNumRays)
+end
+
+function Target:_makeHardTarget(playerRayPosition, playerRayCount, maxNumRays)
+   local middle = math.max(1, maxNumRays / 2)
+   if playerRayCount > middle then
+      self.rayCount = math.random(1, math.floor(middle))
+   else
+      self.rayCount = math.random(math.ceil(middle), maxNumRays)
+   end
+   self.rayPosition = ((playerRayPosition + 6) + math.random(-2, 2)) % 12
 end
 
 return Target

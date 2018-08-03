@@ -9,8 +9,8 @@ GameState = {
 
    _screenRadius = 0,
    
-   DEFAULT_VITALITY = 3,
-   MAX_VITALITY = 6,
+   DEFAULT_VITALITY = 2,
+   MAX_VITALITY = 5,
 }
 
 function GameState:reset()
@@ -28,7 +28,13 @@ function GameState:turnSucceeded()
    self.numTurns = self.numTurns + 1
    self.numTurnsSucceeded = self.numTurnsSucceeded + 1
    self.score = self.score + 1
-   self.vitality = self.vitality + 0.2
+   if self.vitality < 3 then
+      self.vitality = self.vitality + 0.2
+   elseif self.vitality < 4 then
+      self.vitality = self.vitality + 0.15
+   else
+      self.vitality = self.vitality + 0.1
+   end
    if self.vitality > self.MAX_VITALITY then
       self.vitality = self.MAX_VITALITY
    end
