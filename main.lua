@@ -1,23 +1,3 @@
--- steps for friday
---
--- mechanism
--- scale diff
----+ key count scales up
----- key count scales up better... 
----- key counts farther apart from prev
----- failure resets target
--- redo timer drawing to be inside circle?
--- menu: turn the key around to start
--- show timer feedback when you gain time
--- make score more obvious
--- more feedback when you move?
--- rotate circle?
--- scale circle size w/ level?
--- combos?
--- graphical polish
----- cool backgrounds
----- intensity near loss
----- intensity after loss
 
 GameState = require 'gamestate'
 Player = require 'player'
@@ -127,10 +107,10 @@ function _drawGame()
    love.graphics.circle("line", 0, 0, radius)
    Player:draw(radius)
    Target:draw(radius)
+   Timer:draw(radius)
    love.graphics.pop()
    
    Particles:draw()
-   Timer:draw()
 end
 
 function _resetGame()
