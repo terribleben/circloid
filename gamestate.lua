@@ -5,6 +5,7 @@ GameState = {
    viewport = { width = 0, height = 0 },
    numTurns = 0,
    numTurnsSucceeded = 0,
+   font = nil,
 
    _screenRadius = 0,
    

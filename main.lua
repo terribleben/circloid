@@ -11,6 +11,7 @@ Circloid = {
 }
 
 function love.load()
+   _loadFont()
    gDrawFuncs = {
       ["init"] = Menu.draw,
       ["game"] = _drawGame,
@@ -96,7 +97,9 @@ function _drawGame()
    local centerX = GameState.viewport.width * 0.5
    local centerY = GameState.viewport.height * 0.5
    local radius = Circloid._radiusToDraw
-   love.graphics.print(tostring(GameState.score), centerX, centerY)
+   local scoreStr = tostring(GameState.score)
+   local scoreWidth = GameState.font:getWidth(scoreStr)
+   love.graphics.print(scoreStr, centerX - scoreWidth * 0.5, centerY - GameState.font:getHeight() * 0.5)
    
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
@@ -124,4 +127,9 @@ end
 function _restartGame()
    GameState.state = "game"
    Target:permute(Player.rayPosition, Player.rayCount)
+end
+
+function _loadFont()
+   GameState.font = love.graphics.newFont("x14y24pxHeadUpDaisy.ttf") -- can't get size to work
+   love.graphics.setFont(GameState.font)
 end
