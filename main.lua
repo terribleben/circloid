@@ -1,13 +1,12 @@
 Player = require 'player'
 Target = require 'target'
 Particles = require 'particles'
+Timer = require 'timer'
 
 gScreenWidth = 800
 gScreenHeight = 600
 
 gGameState = "init"
-
-MAX_TIME_REMAINING = 10
 
 function love.load()
    width, height, flags = love.window.getMode()
@@ -45,6 +44,7 @@ function love.keypressed(key, scancode, isrepeat)
    if Player.rayPosition == Target.rayPosition
       and Player.rayCount == Target.rayCount then
          _computeNewTarget()
+         Timer:addTime()
          gScore = gScore + 1
          gScale = 1.1
          Particles:add(3, {
@@ -57,16 +57,15 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-   Particles:update(dt)
-   gTimeRemaining = gTimeRemaining - dt
    if gScale ~= 1 then
       gScale = gScale + (1 - gScale) * 0.25
       if math.abs(1 - gScale) < 0.01 then
          gScale = 1
       end
    end
-   if gTimeRemaining < 0 then
-      gTimeRemaining = 0
+   Particles:update(dt)
+   Timer:update(dt)
+   if Timer:isExpired() then
       if gGameState ~= "end" then
          gGameState = "end"
       end
@@ -97,13 +96,8 @@ function _drawGame()
    Target:draw(gScreenHeight)
    love.graphics.pop()
    
-   love.graphics.rectangle(
-      "line",
-      10, gScreenHeight - 50,
-      (gScreenWidth - 20) * (gTimeRemaining / MAX_TIME_REMAINING),
-      30
-   )
    Particles:draw()
+   Timer:draw({ width = gScreenWidth, height = gScreenHeight})
 end
 
 function _restartGame()
@@ -111,7 +105,7 @@ function _restartGame()
    gScale = 1
    Player:reset()
    Target:reset()
-   gTimeRemaining = MAX_TIME_REMAINING
+   Timer:reset()
    _computeNewTarget()
 end
 
@@ -120,9 +114,5 @@ function _computeNewTarget()
    and Player.rayCount == Target.rayCount do
       Target.rayPosition = math.random(0, 11)
       Target.rayCount = math.random(1, 3)
-   end
-   gTimeRemaining = gTimeRemaining + (MAX_TIME_REMAINING * 0.1)
-   if gTimeRemaining > MAX_TIME_REMAINING then
-      gTimeRemaining = MAX_TIME_REMAINING
    end
 end
