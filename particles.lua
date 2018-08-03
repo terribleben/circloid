@@ -1,4 +1,5 @@
 Particle = require 'particle'
+GameState = require 'gamestate'
 
 Particles = {
    _particles = {},
@@ -31,6 +32,18 @@ function Particles:update(dt)
          self._particles[index] = nil
       end
    end
+end
+
+-- specific game actions
+
+function Particles:greenBurst()
+   local proto = {
+      x = GameState.viewport.width * 0.5,
+      y = GameState.viewport.height * 0.5,
+      radius = GameState:getRadius(),
+      lifespan = 0.6
+   }
+   self:add(3, proto)
 end
 
 return Particles

@@ -44,15 +44,13 @@ function love.keypressed(key, scancode, isrepeat)
       end
    end
 
-   if GameState.state == "init" and Menu:isReady() then
-      Particles:add(3, {
-                       x = GameState.viewport.width * 0.5,
-                       y = GameState.viewport.height * 0.5,
-                       radius = GameState:getRadius(),
-                       lifespan = 0.6
-      })
-      _resetGame()
-      _restartGame()
+   if GameState.state == "init" then
+      Menu:keypressed(key)
+      if Menu:isReady() then
+         Particles:greenBurst()
+         _resetGame()
+         _restartGame()
+      end
    end
 
    if GameState.state == "game" then
@@ -64,6 +62,7 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
+   Particles:update(dt)
    if GameState.state == "game" then
       if gScale ~= 1 then
          gScale = gScale + (1 - gScale) * 0.25
@@ -72,7 +71,6 @@ function love.update(dt)
          end
       end
       Circloid._radiusToDraw = Circloid._radiusToDraw + (GameState:getRadius() - Circloid._radiusToDraw) * 0.25
-      Particles:update(dt)
       Timer:update(dt)
       if Timer:isExpired() then
          _turnFailed()
@@ -92,12 +90,7 @@ function _turnSucceeded()
    GameState:turnSucceeded()
    Target:permute(Player.rayPosition, Player.rayCount)
    gScale = 1.1
-   Particles:add(3, {
-                    x = GameState.viewport.width * 0.5,
-                    y = GameState.viewport.height * 0.5,
-                    radius = GameState:getRadius(),
-                    lifespan = 0.6
-   })
+   Particles:greenBurst()
 end
 
 function _drawGameOver()
