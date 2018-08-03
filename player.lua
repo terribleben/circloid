@@ -3,12 +3,11 @@ Ray = require 'ray'
 
 Player = {
    rayPosition = 0,
-   rayCount = 0,
+   rayCount = 1,
 }
 
 function Player:reset()
-   self.rayPosition = 0
-   self.rayCount = 1
+   -- nothing here
 end
 
 function Player:rotateClockwise()

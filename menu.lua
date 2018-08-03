@@ -4,10 +4,24 @@ Particles = require 'particles'
 
 Menu = {
    _state = "init",
-   _instructions = "ready?",
-   _rayPosition = 7,
-   _rayCount = 3,
+   _targetLabel = "",
+   _centerLabel = "",
+   _rayPosition = 0,
+   _rayCount = 1,
 }
+
+function Menu:reset()
+   if GameState.state == "init" then
+      self._state = "init"
+      self._targetLabel = "ready?"
+      self._centerLabel = "WASD"
+      self._rayPosition = 7
+      self._rayCount = 3
+   else
+      self._centerLabel = "GAME OVER"
+      self:_setReadyState(true)
+   end
+end
 
 function Menu:draw()
    love.graphics.setColor(1, 1, 1, 1)
@@ -22,9 +36,9 @@ function Menu:draw()
    Menu._drawRays(Menu, radius)
 
    love.graphics.setColor(1, 1, 1, 1)
-   love.graphics.print("WASD", -16, -7)
+   love.graphics.print(Menu._centerLabel, -16, -7)
    love.graphics.rotate(((math.pi * 2) / 12) * Menu._rayPosition)
-   love.graphics.print(Menu._instructions, (radius * 1.2) + 7, -7)
+   love.graphics.print(Menu._targetLabel, (radius * 1.2) + 7, -7)
    love.graphics.pop()
    
    Particles:draw()
@@ -33,10 +47,7 @@ end
 function Menu:keypressed(key)
    -- check if in 'ready' -> go to start
    if self._state == "init" and self:_isPlayerMatched() then
-      self._state = "ready"
-      self._instructions = "start"
-      self._rayCount = 1
-      self._rayPosition = 0
+      self:_setReadyState(false)
       Particles:greenBurst()
    end
 end
@@ -50,6 +61,17 @@ end
 
 function Menu:isReady()
    return (self._state == "ready" and self:_isPlayerMatched())
+end
+
+function Menu:_setReadyState(isGameOver)
+   self._state = "ready"
+   self._targetLabel = "start"
+   self._rayCount = 1
+   if isGameOver then
+      self._rayPosition = (Player.rayPosition + 6) % 12
+   else
+      self._rayPosition = 0
+   end
 end
 
 function Menu:_isPlayerMatched()

@@ -45,9 +45,6 @@ function GameState:turnFailed()
 
    if self.vitality <= 0 then
       self.vitality = 0
-      if self.state ~= "end" then
-         self.state = "end"
-      end
    end
 end
 

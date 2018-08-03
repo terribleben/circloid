@@ -14,7 +14,7 @@ function love.load()
    gDrawFuncs = {
       ["init"] = Menu.draw,
       ["game"] = _drawGame,
-      ["end"] = _drawGameOver,
+      ["end"] = Menu.draw,
    }
    _resetGame()
 end
@@ -25,35 +25,23 @@ function love.draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-   if GameState.state == "game" or GameState.state == "init" then
-      if key == "a" then
-         Player:rotateCounter()
-      elseif key == "d" then
-         Player:rotateClockwise()
-      elseif key == "w" then
-         Player:addRay()
-      elseif key == "s" then
-         Player:subtractRay()
-      end
+   if key == "a" then
+      Player:rotateCounter()
+   elseif key == "d" then
+      Player:rotateClockwise()
+   elseif key == "w" then
+      Player:addRay()
+   elseif key == "s" then
+      Player:subtractRay()
    end
 
-   if GameState.state == "end" then
-      if key == "space" then
-         _resetGame()
-         _restartGame()
-      end
-   end
-
-   if GameState.state == "init" then
+   if GameState.state ~= "game" then
       Menu:keypressed(key)
       if Menu:isReady() then
          Particles:greenBurst()
-         _resetGame()
          _restartGame()
       end
-   end
-
-   if GameState.state == "game" then
+   else
       if Player.rayPosition == Target.rayPosition
       and Player.rayCount == Target.rayCount then
          _turnSucceeded()
@@ -87,6 +75,12 @@ function _turnFailed()
    Timer:turnFailed()
    GameState:turnFailed()
    Particles:redBurst()
+   if GameState.vitality <= 0 then
+      if GameState.state ~= "end" then
+         GameState.state = "end"
+      end
+      _resetGame()
+   end
 end
 
 function _turnSucceeded()
@@ -95,11 +89,6 @@ function _turnSucceeded()
    Target:permute(Player.rayPosition, Player.rayCount)
    gScale = 1.1
    Particles:greenBurst()
-end
-
-function _drawGameOver()
-   love.graphics.print("GAME OVER", GameState.viewport.width * 0.25, GameState.viewport.height * 0.5)
-   love.graphics.print("<space> to restart", GameState.viewport.width * 0.25, GameState.viewport.height * 0.55)
 end
 
 function _drawGame()
@@ -124,6 +113,7 @@ end
 
 function _resetGame()
    gScale = 1
+   Menu:reset()
    Player:reset()
    Target:reset()
    GameState:reset()
