@@ -11,7 +11,7 @@ function Target:reset()
 end
 
 function Target:draw(maxRadius)
-   love.graphics.setColor(1, 0, 0, 1)
+   love.graphics.setColor(0, 1, 1, 1)
    for idx = 0, self.rayCount - 1 do
       local initialAngle = ((math.pi * 2) / self.rayCount) * idx
       self:_drawRay(maxRadius, initialAngle)
