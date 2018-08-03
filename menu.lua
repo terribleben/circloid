@@ -44,26 +44,9 @@ end
 
 function Menu:_drawRays(radius)
    love.graphics.setColor(0, 1, 1, 1)
-   for idx = 0, self._rayCount - 1 do
-      local initialAngle = ((math.pi * 2) / self._rayCount) * idx
-      self:_drawRay(radius, initialAngle)
-   end
-end
-
-function Menu:_drawRay(radius, initialAngle)
-   local innerRadius, outerRadius
-   innerRadius = radius * 0.4
-   outerRadius = radius * 1.2
-   if initialAngle ~= 0 then
-      innerRadius = radius
-   end
-   local angle = initialAngle + (((math.pi * 2) / 12) * self._rayPosition)
-   love.graphics.line(
-      innerRadius * math.cos(angle),
-      innerRadius * math.sin(angle),
-      outerRadius * math.cos(angle),
-      outerRadius * math.sin(angle)
-   )
+   local minorRadii = { inner = radius, outer = radius * 1.2 }
+   local majorRadii = { inner = radius * 0.4, outer = radius * 1.2 }
+   Ray.drawSet(self._rayPosition, self._rayCount, majorRadii, minorRadii, "inner")
 end
 
 function Menu:isReady()
