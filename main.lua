@@ -1,10 +1,12 @@
 -- steps for friday
 --
--- mechanism:
----- timer per-move fills up circle
----- success: circle grows, timer gets faster
----- failure: circle shrinks
----- scale difficulty: more variation in keys
+-- mechanism
+-- scale diff
+---+ key count scales up
+---- key count scales up better... 
+---- key counts farther apart from prev
+---- failure resets target
+-- redo timer drawing to be inside circle?
 -- menu: turn the key around to start
 -- show timer feedback when you gain time
 -- make score more obvious
@@ -90,9 +92,9 @@ function _turnFailed()
 end
 
 function _turnSucceeded()
-   _computeNewTarget()
    Timer:turnSucceeded()
    GameState:turnSucceeded()
+   Target:permute(Player.rayPosition, Player.rayCount)
    gScale = 1.1
    Particles:add(3, {
                     x = GameState.viewport.width * 0.5,
@@ -142,13 +144,5 @@ end
 
 function _restartGame()
    GameState.state = "game"
-   _computeNewTarget()
-end
-
-function _computeNewTarget()
-   while Player.rayPosition == Target.rayPosition
-   and Player.rayCount == Target.rayCount do
-      Target.rayPosition = math.random(0, 11)
-      Target.rayCount = math.random(1, 3)
-   end
+   Target:permute(Player.rayPosition, Player.rayCount)
 end

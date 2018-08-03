@@ -4,7 +4,7 @@ Timer = {
    _timeRemaining = 0,
    _timeScale = 1,
 
-   MAX_TIME_REMAINING = 6,
+   MAX_TIME_REMAINING = 4,
 }
 
 function Timer:reset()
@@ -14,7 +14,7 @@ end
 
 function Timer:turnSucceeded()
    self._timeRemaining = self.MAX_TIME_REMAINING
-   self._timeScale = self._timeScale + 0.01
+   self._timeScale = 1 + (0.015 * GameState.numTurnsSucceeded)
 end
 
 function Timer:turnFailed()

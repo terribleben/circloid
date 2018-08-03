@@ -34,8 +34,8 @@ end
 
 function Player:addRay()
    self.rayCount = self.rayCount + 1
-   if self.rayCount > 5 then
-      self.rayCount = 5
+   if self.rayCount > 6 then
+      self.rayCount = 6
    end
 end
 

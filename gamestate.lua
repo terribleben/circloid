@@ -3,6 +3,8 @@ GameState = {
    score = 0,
    state = "init",
    viewport = { width = 0, height = 0 },
+   numTurns = 0,
+   numTurnsSucceeded = 0,
 
    _screenRadius = 0,
    
@@ -12,6 +14,8 @@ GameState = {
 
 function GameState:reset()
    self.score = 0
+   self.numTurns = 0
+   self.numTurnsSucceeded = 0
    self.vitality = self.DEFAULT_VITALITY
    local width, height, flags = love.window.getMode()
    self.viewport.width = width
@@ -20,19 +24,23 @@ function GameState:reset()
 end
 
 function GameState:turnSucceeded()
+   self.numTurns = self.numTurns + 1
+   self.numTurnsSucceeded = self.numTurnsSucceeded + 1
    self.score = self.score + 1
-   self.vitality = self.vitality + 0.25
+   self.vitality = self.vitality + 0.2
    if self.vitality > self.MAX_VITALITY then
       self.vitality = self.MAX_VITALITY
    end
 end
 
 function GameState:turnFailed()
-   -- TODO: not sure if I want to keep this logic
-   if math.floor(self.vitality) == self.vitality then
-      self.vitality = self.vitality - 1
+   self.numTurns = self.numTurns + 1
+   
+   -- allow people to hang on at near-death
+   if self.vitality < 2 and self.vitality > 1 then
+      self.vitality = 1
    else
-      self.vitality = math.floor(self.vitality)
+      self.vitality = self.vitality - 1
    end
 
    if self.vitality <= 0 then
@@ -44,8 +52,7 @@ function GameState:turnFailed()
 end
 
 function GameState:getRadius()
-   -- default: 0.25, max: 0.35, min: 0.15
-   local scale = 0.15 + (0.2 * (self.vitality / self.MAX_VITALITY))
+   local scale = 0.15 + (0.18 * (self.vitality / self.MAX_VITALITY))
    return self._screenRadius * scale
 end
 
