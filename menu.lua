@@ -17,7 +17,6 @@ function Menu:draw()
    
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
-   love.graphics.circle("line", 0, 0, radius)
    Player:draw(radius)
 
    Menu._drawRays(Menu, radius)

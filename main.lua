@@ -64,6 +64,9 @@ end
 function love.update(dt)
    Particles:update(dt)
    if GameState.state == "game" then
+      if GameState.vitality < 2 then
+         Particles:maybeDanger()
+      end
       if gScale ~= 1 then
          gScale = gScale + (1 - gScale) * 0.25
          if math.abs(1 - gScale) < 0.01 then
@@ -83,6 +86,7 @@ function _turnFailed()
    -- check game over
    Timer:turnFailed()
    GameState:turnFailed()
+   Particles:redBurst()
 end
 
 function _turnSucceeded()
@@ -108,13 +112,14 @@ function _drawGame()
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
    love.graphics.scale(gScale, gScale)
-   love.graphics.circle("line", 0, 0, radius)
    Player:draw(radius)
    Target:draw(radius)
    Timer:draw(radius)
    love.graphics.pop()
-   
+
+   love.graphics.setBlendMode("add")
    Particles:draw()
+   love.graphics.setBlendMode("alpha")
 end
 
 function _resetGame()

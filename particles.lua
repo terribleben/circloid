@@ -1,4 +1,4 @@
-Particle = require 'particle'
+Particle, BadParticle, BigSmokeParticle = require 'particle' ()
 GameState = require 'gamestate'
 
 Particles = {
@@ -6,10 +6,10 @@ Particles = {
    _nextParticleIndex = 1
 }
 
-function Particles:add(count, proto)
-   proto = proto or Particle:new()
+function Particles:add(count, Kind, proto)
+   proto = proto or Kind:new()
    for index = 0, count - 1 do
-      self._particles[self._nextParticleIndex] = Particle:new({
+      self._particles[self._nextParticleIndex] = Kind:new({
             x = proto.x - 16 + math.random(0, 32),
             y = proto.y - 16 + math.random(0, 32),
             radius = proto.radius * (0.92 + math.random() * 0.16),
@@ -43,7 +43,31 @@ function Particles:greenBurst()
       radius = GameState:getRadius(),
       lifespan = 0.6
    }
-   self:add(3, proto)
+   self:add(3, Particle, proto)
+end
+
+function Particles:redBurst()
+   local proto = {
+      x = GameState.viewport.width * 0.5,
+      y = GameState.viewport.height * 0.5,
+      radius = GameState:getRadius(),
+      lifespan = 0.6
+   }
+   self:add(5, BigSmokeParticle, proto)
+   self:add(3, BadParticle, proto)
+end
+
+function Particles:maybeDanger()
+   if math.random() < 0.1 then
+      local proto = {
+         x = GameState.viewport.width * 0.5,
+         y = GameState.viewport.height * 0.5,
+         radius = GameState:getRadius(),
+         lifespan = 0.4,
+         spread = 0.5,
+      }
+      self:add(1, BigSmokeParticle, proto)
+   end
 end
 
 return Particles
