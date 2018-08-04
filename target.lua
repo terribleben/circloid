@@ -14,11 +14,11 @@ end
 function Target:permute(playerRayPosition, playerRayCount)
    -- (linear: local maxNumRays = 1 + math.floor(GameState.numTurnsSucceeded / 4))
    local maxNumRays, pHardMove, isHardMove
-   if (GameState.numTurnsSucceeded < 5) then
+   if (GameState.numTurnsSucceeded < 4) then
       maxNumRays = 1
       pHardMove = 0
    else
-      maxNumRays = math.floor(math.log(GameState.numTurnsSucceeded / 3.5), 2) + 2
+      maxNumRays = math.floor(math.log(GameState.numTurnsSucceeded / 2.8), 2) + 2
       pHardMove = 0.1 * maxNumRays
    end
    maxNumRays = math.min(6, maxNumRays)

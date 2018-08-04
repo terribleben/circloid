@@ -1,4 +1,4 @@
-Particle, BadParticle, BigSmokeParticle, SmallRayParticle, BigRayParticle = require 'particle' ()
+Particle, BadParticle, BigSmokeParticle, SmallRayParticle, BigRayParticle, SmallRedParticle = require 'particle' ()
 GameState = require 'gamestate'
 
 Particles = {
@@ -63,6 +63,22 @@ function Particles:redBurst()
    }
    self:addRandom(5, BigSmokeParticle, proto)
    self:addRandom(3, BadParticle, proto)
+
+   for index = 1, 10 do
+      local displaceRadius = GameState:getRadius() * (0.98 + math.random() * 0.04)
+      local displaceAngle = math.random() * math.pi * 2
+      local proto = {
+         x = GameState.viewport.width * 0.5 + displaceRadius * math.cos(displaceAngle),
+         y = GameState.viewport.height * 0.5 + displaceRadius * math.sin(displaceAngle),
+         radius = math.random(2, 3.5),
+         lifespan = 0.3 + math.random() * 0.2,
+         velocity = {
+            speed = math.random(4, 6),
+            direction = displaceAngle * (0.98 + math.random() * 0.04),
+         },
+      }
+      self:add(1, SmallRedParticle, proto)
+   end
 end
 
 function Particles:playerMoved(rayPosition, rayCount)
@@ -99,6 +115,21 @@ function Particles:maybeDanger()
          spread = 0.5,
       }
       self:addRandom(1, BigSmokeParticle, proto)
+   end
+   if math.random() < 0.08 then
+      local displaceRadius = GameState:getRadius() * (0.98 + math.random() * 0.04)
+      local displaceAngle = math.random() * math.pi * 2
+      local proto = {
+         x = GameState.viewport.width * 0.5 + displaceRadius * math.cos(displaceAngle),
+         y = GameState.viewport.height * 0.5 + displaceRadius * math.sin(displaceAngle),
+         radius = math.random(2, 3.5),
+         lifespan = 0.3 + math.random() * 0.2,
+         velocity = {
+            speed = math.random(4, 6),
+            direction = displaceAngle * (0.98 + math.random() * 0.04),
+         },
+      }
+      self:add(1, SmallRedParticle, proto)
    end
 end
 

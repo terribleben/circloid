@@ -31,7 +31,7 @@ function Particle:draw(dt)
    end
 end
 
--- red particle
+-- bad particle
 
 BadParticle = {
    x = 0,
@@ -58,6 +58,39 @@ function BadParticle:update(dt)
 end
 
 function BadParticle:draw(dt)
+   if self.ttl > 0 then
+      love.graphics.setColor(1, 0, 0, 0.9 * (self.ttl / self.lifespan))
+      love.graphics.circle("line", self.x, self.y, self.radius)
+   end
+end
+
+-- small red particle
+
+SmallRedParticle = {
+   x = 0,
+   y = 0,
+   radius = 0,
+   ttl = 0,
+   lifespan = 0,
+   velocity = { speed = 0, direction = 0 },
+}
+
+function SmallRedParticle:new(p)
+   p = p or {}
+   setmetatable(p, self)
+   self.__index = self
+   p.ttl = p.lifespan
+   return p
+end
+
+function SmallRedParticle:update(dt)
+   self.ttl = self.ttl - dt
+   self.x = self.x + self.velocity.speed * math.cos(self.velocity.direction)
+   self.y = self.y + self.velocity.speed * math.sin(self.velocity.direction)
+   self.velocity.speed = self.velocity.speed * 0.96
+end
+
+function SmallRedParticle:draw(dt)
    if self.ttl > 0 then
       love.graphics.setColor(1, 0, 0, 0.9 * (self.ttl / self.lifespan))
       love.graphics.circle("line", self.x, self.y, self.radius)
@@ -178,5 +211,5 @@ function BigRayParticle:draw(dt)
 end
 
 return function()
-   return Particle, BadParticle, BigSmokeParticle, SmallRayParticle, BigRayParticle
+   return Particle, BadParticle, BigSmokeParticle, SmallRayParticle, BigRayParticle, SmallRedParticle
 end

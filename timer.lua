@@ -14,7 +14,7 @@ end
 
 function Timer:turnSucceeded()
    self._timeRemaining = self.MAX_TIME_REMAINING
-   self._timeScale = 1 + (0.025 * GameState.numTurnsSucceeded)
+   self._timeScale = 1 + (0.0275 * GameState.numTurnsSucceeded)
 end
 
 function Timer:turnFailed()

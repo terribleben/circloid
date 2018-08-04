@@ -1,6 +1,7 @@
 GameState = require 'gamestate'
 Player = require 'player'
 Particles = require 'particles'
+Background = require 'background'
 
 Menu = {
    _state = "init",
@@ -66,6 +67,7 @@ function Menu:isReady()
 end
 
 function Menu:_setReadyState(isGameOver)
+   Background:setMessage("READY", { isPersistent = true, ttl = 1 })
    self._state = "ready"
    self._targetLabel = "start"
    self._rayCount = 1
