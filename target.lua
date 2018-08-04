@@ -33,10 +33,13 @@ function Target:permute(playerRayPosition, playerRayCount)
 end
 
 function Target:draw(radius)
+   love.graphics.push("all")
    love.graphics.setColor(0, 1, 1, 1)
+   love.graphics.setLineWidth(3)
    local minorRadii = { inner = radius, outer = radius * 1.2 }
    local majorRadii = { inner = radius * 0.4, outer = radius * 1.2 }
    Ray.drawSet(self.rayPosition, self.rayCount, majorRadii, minorRadii, "inner")
+   love.graphics.pop()
 end
 
 function Target:_makeRandomTarget(maxNumRays)

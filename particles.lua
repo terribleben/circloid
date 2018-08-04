@@ -1,4 +1,4 @@
-Particle, BadParticle, BigSmokeParticle = require 'particle' ()
+Particle, BadParticle, BigSmokeParticle, SmallRayParticle, BigRayParticle = require 'particle' ()
 GameState = require 'gamestate'
 
 Particles = {
@@ -6,7 +6,7 @@ Particles = {
    _nextParticleIndex = 1
 }
 
-function Particles:add(count, Kind, proto)
+function Particles:addRandom(count, Kind, proto)
    proto = proto or Kind:new()
    for index = 0, count - 1 do
       self._particles[self._nextParticleIndex] = Kind:new({
@@ -15,6 +15,14 @@ function Particles:add(count, Kind, proto)
             radius = proto.radius * (0.92 + math.random() * 0.16),
             lifespan = proto.lifespan * (0.92 + math.random() * 0.16),
       })
+      self._nextParticleIndex = self._nextParticleIndex + 1
+   end
+end
+
+function Particles:add(count, Kind, proto)
+   proto = proto or Kind:new()
+   for index = 0, count - 1 do
+      self._particles[self._nextParticleIndex] = Kind:new(proto)
       self._nextParticleIndex = self._nextParticleIndex + 1
    end
 end
@@ -43,7 +51,7 @@ function Particles:greenBurst()
       radius = GameState:getRadius(),
       lifespan = 0.6
    }
-   self:add(3, Particle, proto)
+   self:addRandom(3, Particle, proto)
 end
 
 function Particles:redBurst()
@@ -53,8 +61,32 @@ function Particles:redBurst()
       radius = GameState:getRadius(),
       lifespan = 0.6
    }
-   self:add(5, BigSmokeParticle, proto)
-   self:add(3, BadParticle, proto)
+   self:addRandom(5, BigSmokeParticle, proto)
+   self:addRandom(3, BadParticle, proto)
+end
+
+function Particles:playerMoved(rayPosition, rayCount)
+   local proto = {
+      x = GameState.viewport.width * 0.5,
+      y = GameState.viewport.height * 0.5,
+      radius = GameState:getRadius(),
+      lifespan = 1,
+      position = rayPosition,
+      count = rayCount,
+   }
+   self:add(1, SmallRayParticle, proto)
+end
+
+function Particles:playerMatched(rayPosition, rayCount)
+   local proto = {
+      x = GameState.viewport.width * 0.5,
+      y = GameState.viewport.height * 0.5,
+      radius = GameState:getRadius(),
+      lifespan = 0.3,
+      position = rayPosition,
+      count = rayCount,
+   }
+   self:add(1, BigRayParticle, proto)
 end
 
 function Particles:maybeDanger()
@@ -66,7 +98,7 @@ function Particles:maybeDanger()
          lifespan = 0.4,
          spread = 0.5,
       }
-      self:add(1, BigSmokeParticle, proto)
+      self:addRandom(1, BigSmokeParticle, proto)
    end
 end
 

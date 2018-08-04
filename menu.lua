@@ -50,6 +50,7 @@ function Menu:keypressed(key)
    if self._state == "init" and self:_isPlayerMatched() then
       self:_setReadyState(false)
       Particles:greenBurst()
+      Particles:playerMatched(Player.rayPosition, Player.rayCount)
    end
 end
 

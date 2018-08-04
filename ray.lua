@@ -1,6 +1,6 @@
 Ray = {}
 
-function Ray.drawSet(position, count, majorRadii, minorRadii, pointerStyle)
+function Ray.drawSet(position, count, majorRadii, minorRadii, pointerStyle, width)
    local initialAngle = ((math.pi * 2) / 12) * position
    local incrementalAngle = ((math.pi * 2) / count)
    love.graphics.push()
@@ -17,7 +17,11 @@ function Ray.drawSet(position, count, majorRadii, minorRadii, pointerStyle)
       else
          radii = minorRadii
       end
-      love.graphics.line(radii.inner, 0, radii.outer, 0)
+      if width ~= nil and width > 1 then
+         love.graphics.rectangle("fill", radii.inner, width * -0.5, radii.outer - radii.inner, width)
+      else
+         love.graphics.line(radii.inner, 0, radii.outer, 0)
+      end
       love.graphics.rotate(incrementalAngle)
    end
    love.graphics.pop()

@@ -90,6 +90,7 @@ function _turnSucceeded()
    Target:permute(Player.rayPosition, Player.rayCount)
    gScale = 1.1
    Particles:greenBurst()
+   Particles:playerMatched(Player.rayPosition, Player.rayCount)
 end
 
 function _drawGame()

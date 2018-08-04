@@ -1,4 +1,5 @@
 GameState = require 'gamestate'
+Particles = require 'particles'
 Ray = require 'ray'
 
 Player = {
@@ -11,6 +12,7 @@ function Player:reset()
 end
 
 function Player:rotateClockwise()
+   Particles:playerMoved(self.rayPosition, self.rayCount)
    self.rayPosition = self.rayPosition + 1
    if self.rayPosition > 11 then
       self.rayPosition = 0
@@ -18,6 +20,7 @@ function Player:rotateClockwise()
 end
 
 function Player:rotateCounter()
+   Particles:playerMoved(self.rayPosition, self.rayCount)
    self.rayPosition = self.rayPosition - 1
    if self.rayPosition < 0 then
       self.rayPosition = 11

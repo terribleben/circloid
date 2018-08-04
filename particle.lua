@@ -1,3 +1,5 @@
+Ray = require 'ray'
+
 Particle = {
    x = 0,
    y = 0,
@@ -101,6 +103,80 @@ function BigSmokeParticle:draw(dt)
    end
 end
 
+-- small ray particle
+
+
+SmallRayParticle = {
+   radius = 0,
+   x = 0,
+   y = 0,
+   position = 0,
+   count = 0,
+   ttl = 0,
+   lifespan = 0,
+}
+
+function SmallRayParticle:new(p)
+   p = p or {}
+   setmetatable(p, self)
+   self.__index = self
+   p.ttl = p.lifespan
+   return p
+end
+
+function SmallRayParticle:update(dt)
+   self.ttl = self.ttl - dt
+end
+
+function SmallRayParticle:draw(dt)
+   if self.ttl > 0 then
+      love.graphics.setColor(1, 1, 1, 0.5 * (self.ttl / self.lifespan))
+      love.graphics.push()
+      love.graphics.translate(self.x, self.y)
+      local radius = self.radius
+      local minorRadii = { inner = radius * 1.2, outer = radius * 1.5 }
+      Ray.drawSet(self.position, self.count, minorRadii, minorRadii, nil);
+      love.graphics.pop()
+   end
+end
+
+-- big ray particle
+
+
+BigRayParticle = {
+   radius = 0,
+   x = 0,
+   y = 0,
+   position = 0,
+   count = 0,
+   ttl = 0,
+   lifespan = 0,
+}
+
+function BigRayParticle:new(p)
+   p = p or {}
+   setmetatable(p, self)
+   self.__index = self
+   p.ttl = p.lifespan
+   return p
+end
+
+function BigRayParticle:update(dt)
+   self.ttl = self.ttl - dt
+end
+
+function BigRayParticle:draw(dt)
+   if self.ttl > 0 then
+      love.graphics.setColor(1, 1, 1, 0.6 * (self.ttl / self.lifespan))
+      love.graphics.push()
+      love.graphics.translate(self.x, self.y)
+      local radius = self.radius
+      local minorRadii = { inner = radius, outer = radius * 4 }
+      Ray.drawSet(self.position, self.count, minorRadii, minorRadii, nil, 40 - (self.ttl / self.lifespan) * 36)
+      love.graphics.pop()
+   end
+end
+
 return function()
-   return Particle, BadParticle, BigSmokeParticle
+   return Particle, BadParticle, BigSmokeParticle, SmallRayParticle, BigRayParticle
 end
