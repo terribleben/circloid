@@ -40,6 +40,7 @@ function love.keypressed(key, scancode, isrepeat)
       Menu:keypressed(key)
       if Menu:isReady() then
          Particles:greenBurst()
+         Particles:playerMatched(Player.rayPosition, Player.rayCount)
          _restartGame()
       end
    else
