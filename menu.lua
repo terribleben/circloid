@@ -2,6 +2,7 @@ GameState = require 'gamestate'
 Player = require 'player'
 Particles = require 'particles'
 Background = require 'background'
+HiScore = require 'hiscore'
 
 Menu = {
    _state = "init",
@@ -9,6 +10,7 @@ Menu = {
    _centerLabel = "",
    _rayPosition = 0,
    _rayCount = 1,
+   _hiscore = 0,
 }
 
 function Menu:reset()
@@ -22,6 +24,7 @@ function Menu:reset()
       self._centerLabel = "GAME OVER"
       self:_setReadyState(true)
    end
+   self._hiscore = HiScore:get()
 end
 
 function Menu:draw()
@@ -42,6 +45,15 @@ function Menu:draw()
    love.graphics.rotate(((math.pi * 2) / 12) * Menu._rayPosition)
    love.graphics.print(Menu._targetLabel, (radius * 1.2) + 7, -7)
    love.graphics.pop()
+
+   if Menu._hiscore then
+      local hiscoreText = "HI SCORE " .. tostring(Menu._hiscore)
+      love.graphics.print(
+         hiscoreText,
+         GameState.viewport.width - 10 - GameState.font:getWidth(hiscoreText),
+         GameState.viewport.height - 10 - GameState.font:getHeight()
+      )
+   end
    
    Particles:draw()
 end

@@ -1,4 +1,5 @@
 Background = require 'background'
+HiScore = require 'hiscore'
 GameState = require 'gamestate'
 Player = require 'player'
 Target = require 'target'
@@ -20,6 +21,7 @@ function love.load()
       ["game"] = _drawGame,
       ["end"] = Menu.draw,
    }
+   HiScore:load()
    _resetGame()
 end
 
@@ -88,6 +90,7 @@ function _turnFailed()
    if GameState.vitality <= 0 then
       if GameState.state ~= "end" then
          GameState.state = "end"
+         HiScore:maybeSave(GameState.score)
       end
       _resetGame()
    elseif GameState.vitality <= 1 then
