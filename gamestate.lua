@@ -44,7 +44,8 @@ function GameState:turnFailed()
    self.numTurns = self.numTurns + 1
    
    -- allow people to hang on at near-death
-   if self.vitality < 2 and self.vitality > 1 then
+   -- if they are just learning
+   if self.numTurnsSucceeded < 15 and self.vitality < 2 and self.vitality > 1 then
       self.vitality = 1
    else
       self.vitality = self.vitality - 1
