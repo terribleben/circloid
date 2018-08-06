@@ -49,8 +49,9 @@ function love.keypressed(key, scancode, isrepeat)
          _restartGame()
       end
    else
-      if Player.rayPosition == Target.rayPosition
-      and Player.rayCount == Target.rayCount then
+      local target = Target:getConfiguration()
+      if Player.rayPosition == target.rayPosition
+      and Player.rayCount == target.rayCount then
          _turnSucceeded()
       end
    end
@@ -101,7 +102,7 @@ end
 function _turnSucceeded()
    Timer:turnSucceeded()
    GameState:turnSucceeded()
-   Target:permute(Player.rayPosition, Player.rayCount)
+   Target:next()
    Circloid._scale = 1.1
    Particles:greenBurst()
    Particles:playerMatched(Player.rayPosition, Player.rayCount)
@@ -150,7 +151,6 @@ end
 function _restartGame()
    Background:setMessage("BEGIN", { isPersistent = true, ttl = 2 })
    GameState.state = "game"
-   Target:permute(Player.rayPosition, Player.rayCount)
 end
 
 function _loadFont()

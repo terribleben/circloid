@@ -86,7 +86,7 @@ function Background:draw()
    while y > 0 do
       y = y - spacing
    end
-   love.graphics.setColor(0.7, 0.7, 0.7, 1)
+   love.graphics.setColor(0.6, 0.6, 0.6, 1)
    while y < GameState.viewport.height do
       self:_drawBox(index, y, height)
       y = y + spacing

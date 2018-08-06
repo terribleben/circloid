@@ -56,10 +56,13 @@ function Menu:keypressed(key)
 end
 
 function Menu:_drawRays(radius)
+   love.graphics.push("all")
+   love.graphics.setLineWidth(3)
    love.graphics.setColor(0, 1, 1, 1)
    local minorRadii = { inner = radius, outer = radius * 1.2 }
    local majorRadii = { inner = radius * 0.4, outer = radius * 1.2 }
    Ray.drawSet(self._rayPosition, self._rayCount, majorRadii, minorRadii, "inner")
+   love.graphics.pop()
 end
 
 function Menu:isReady()
