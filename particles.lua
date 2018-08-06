@@ -90,7 +90,8 @@ function Particles:playerMoved(rayPosition, rayCount)
       position = rayPosition,
       count = rayCount,
    }
-   self:add(1, SmallRayParticle, proto)
+   -- TODO: this was too distracting
+   -- self:add(1, SmallRayParticle, proto)
 end
 
 function Particles:playerMatched(rayPosition, rayCount)
@@ -98,7 +99,7 @@ function Particles:playerMatched(rayPosition, rayCount)
       x = GameState.viewport.width * 0.5,
       y = GameState.viewport.height * 0.5,
       radius = GameState:getRadius(),
-      lifespan = 0.3,
+      lifespan = 0.6,
       position = rayPosition,
       count = rayCount,
    }

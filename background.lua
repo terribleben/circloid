@@ -8,7 +8,8 @@ Background = {
    _isMessagePersistent = false,
    _messageTTL = 0,
    
-   _messageVariants = { "", "", "", "" }
+   _messageVariants = { "", "", "", "" },
+   _scrollCoeffs = { 1.3, -0.5, 2, -2, 0.1, 1 }
 }
 
 function Background:keypressed(key)
@@ -77,25 +78,31 @@ end
 
 function Background:draw()
    local spacing = GameState.viewport.height * 0.14
-   local y = self._scrollIndex * spacing
-   local height = spacing * 0.9
-   local index = 0
-   while y < -spacing do
-      y = y + spacing
-   end
-   while y > 0 do
-      y = y - spacing
-   end
-   love.graphics.setColor(0.6, 0.6, 0.6, 1)
-   while y < GameState.viewport.height do
-      self:_drawBox(index, y, height)
-      y = y + spacing
-      index = index + 1
+   local scrollIndex = self._scrollIndex
+   local xIndex = 1
+   for x = 0, GameState.viewport.width, GameState.viewport.width * 0.22 do
+      local y = scrollIndex * spacing
+      local height = spacing * 0.9
+      local index = 0
+      while y < -spacing do
+         y = y + spacing
+      end
+      while y > 0 do
+         y = y - spacing
+      end
+      love.graphics.setColor(0.4, 0.4, 0.4, 1)
+      while y < GameState.viewport.height do
+         self:_drawBox(index, x, y, height)
+         y = y + spacing
+         index = index + 1
+      end
+      xIndex = xIndex + 1
+      scrollIndex = scrollIndex * self._scrollCoeffs[xIndex]
    end
 end
 
-function Background:_drawBox(index, y, height)
-   love.graphics.rectangle("line", 10, y, GameState.viewport.width * 0.18, height)
+function Background:_drawBox(index, x, y, height)
+   love.graphics.rectangle("line", x + 10, y, GameState.viewport.width * 0.18, height)
    if self._message ~= "" then
       local messageToPrint
       if math.abs(self._scrollIndexVelocity) < 0.1 then
@@ -103,7 +110,7 @@ function Background:_drawBox(index, y, height)
       else
          messageToPrint = "?????"
       end
-      love.graphics.print(messageToPrint, 22, y + height * 0.5 - GameState.font:getHeight() * 0.5)
+      love.graphics.print(messageToPrint, x + 22, y + height * 0.5 - GameState.font:getHeight() * 0.5)
    end
 end
 

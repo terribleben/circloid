@@ -205,7 +205,7 @@ function BigRayParticle:draw(dt)
       love.graphics.translate(self.x, self.y)
       local radius = self.radius
       local minorRadii = { inner = radius, outer = radius * 4 }
-      Ray.drawSet(self.position, self.count, minorRadii, minorRadii, nil, 40 - (self.ttl / self.lifespan) * 36)
+      Ray.drawSet(self.position, self.count, minorRadii, minorRadii, nil, 50 - (self.ttl / self.lifespan) * 36)
       love.graphics.pop()
    end
 end

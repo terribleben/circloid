@@ -78,7 +78,7 @@ function Target:_makeConfiguration(prevConfiguration)
       maxNumRays = 1
       pHardMove = 0
    else
-      maxNumRays = math.floor(math.log(GameState.numTurnsSucceeded / 2.8), 2) + 2
+      maxNumRays = math.floor(math.log(GameState.numTurnsSucceeded / 2.5), 2) + 2
       pHardMove = 0.1 * maxNumRays
    end
    maxNumRays = math.min(6, maxNumRays)

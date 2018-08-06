@@ -56,7 +56,7 @@ function Player:draw(radius)
       end
    else
       love.graphics.setLineWidth(2)
-      love.graphics.setColor(1, 1, 1, 1)
+      love.graphics.setColor(1, 1, 0, 1)
    end
    love.graphics.circle("line", 0, 0, radius)
    local minorRadii = { inner = radius * 1.2, outer = radius * 1.5 }
