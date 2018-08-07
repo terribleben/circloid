@@ -29,6 +29,8 @@ end
 
 function Menu:draw()
    love.graphics.setColor(1, 1, 1, 1)
+   local smallFont = GameState.font[16]
+   love.graphics.setFont(smallFont)
    local centerX = GameState.viewport.width * 0.5
    local centerY = GameState.viewport.height * 0.5
    local radius = GameState:getRadius()
@@ -40,18 +42,18 @@ function Menu:draw()
    Menu._drawRays(Menu, radius)
 
    love.graphics.setColor(1, 1, 1, 1)
-   local labelWidth = GameState.font:getWidth(Menu._centerLabel)
-   love.graphics.print(Menu._centerLabel, labelWidth * -0.5, GameState.font:getHeight() * -0.5)
+   local labelWidth = smallFont:getWidth(Menu._centerLabel)
+   love.graphics.print(Menu._centerLabel, labelWidth * -0.5, smallFont:getHeight() * -0.5)
    love.graphics.rotate(((math.pi * 2) / 12) * Menu._rayPosition)
-   love.graphics.print(Menu._targetLabel, (radius * 1.2) + 7, -7)
+   love.graphics.print(Menu._targetLabel, (radius * 1.2) + 7, smallFont:getHeight() * -0.5)
    love.graphics.pop()
 
    if Menu._hiscore then
       local hiscoreText = "HI SCORE " .. tostring(Menu._hiscore)
       love.graphics.print(
          hiscoreText,
-         GameState.viewport.width - 10 - GameState.font:getWidth(hiscoreText),
-         GameState.viewport.height - 10 - GameState.font:getHeight()
+         GameState.viewport.width - 10 - smallFont:getWidth(hiscoreText),
+         GameState.viewport.height - 10 - smallFont:getHeight()
       )
    end
    

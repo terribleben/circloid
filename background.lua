@@ -102,6 +102,7 @@ function Background:draw()
 end
 
 function Background:_drawBox(index, x, y, height)
+   local smallFont = GameState.font[16]
    love.graphics.rectangle("line", x + 10, y, GameState.viewport.width * 0.18, height)
    if self._message ~= "" then
       local messageToPrint
@@ -110,7 +111,7 @@ function Background:_drawBox(index, x, y, height)
       else
          messageToPrint = "?????"
       end
-      love.graphics.print(messageToPrint, x + 22, y + height * 0.5 - GameState.font:getHeight() * 0.5)
+      love.graphics.print(messageToPrint, x + 22, y + height * 0.5 - smallFont:getHeight() * 0.5)
    end
 end
 

@@ -118,6 +118,8 @@ end
 
 function _drawGame()
    love.graphics.push()
+   local bigFont = GameState.font[48]
+   love.graphics.setFont(bigFont)
    love.graphics.translate(Circloid._cameraOffset.x, Circloid._cameraOffset.y)
    
    love.graphics.setColor(1, 1, 1, 1)
@@ -125,11 +127,11 @@ function _drawGame()
    local centerY = GameState.viewport.height * 0.5
    local radius = Circloid._radiusToDraw
    local scoreStr = tostring(GameState.score)
-   local scoreWidth = GameState.font:getWidth(scoreStr)
+   local scoreWidth = bigFont:getWidth(scoreStr)
    
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
-   love.graphics.print(scoreStr, -scoreWidth * 0.5, -GameState.font:getHeight() * 0.5)
+   love.graphics.print(scoreStr, -scoreWidth * 0.5, -bigFont:getHeight() * 0.5)
    love.graphics.scale(Circloid._scale, Circloid._scale)
    Player:draw(radius)
    Target:draw(radius)
@@ -157,8 +159,10 @@ function _restartGame()
 end
 
 function _loadFont()
-   GameState.font = love.graphics.newFont("x14y24pxHeadUpDaisy.ttf") -- can't get size to work
-   love.graphics.setFont(GameState.font)
+   GameState.font = {}
+   for index, fontSize in pairs({ 16, 48 }) do
+      GameState.font[fontSize] = love.graphics.newFont("x14y24pxHeadUpDaisy.ttf", fontSize)
+   end
 end
 
 function Circloid:reset()
