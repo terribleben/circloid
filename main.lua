@@ -1,18 +1,12 @@
-Background = require 'background'
-HiScore = require 'hiscore'
-GameState = require 'gamestate'
-Player = require 'player'
-Target = require 'target'
-Particles = require 'particles'
-Timer = require 'timer'
-Menu = require 'menu'
-
-Circloid = {
-   _radiusToDraw = 0,
-   _cameraOffset = { x = 0, y = 0 },
-   _cameraVelocity = { x = 0, y = 0 },
-   _scale = 1,
-}
+local Background = require 'background'
+local Circloid = require 'circloid'
+local HiScore = require 'hiscore'
+local GameState = require 'gamestate'
+local Player = require 'player'
+local Target = require 'target'
+local Particles = require 'particles'
+local Timer = require 'timer'
+local Menu = require 'menu'
 
 function love.load()
    _loadFont()
@@ -62,12 +56,6 @@ end
 function love.update(dt)
    Background:update(dt)
    Particles:update(dt)
-   if Circloid._scale ~= 1 then
-      Circloid._scale = Circloid._scale + (1 - Circloid._scale) * 0.25
-      if math.abs(1 - Circloid._scale) < 0.01 then
-         Circloid._scale = 1
-      end
-   end
    Circloid:update(dt)
    if GameState.state == "game" then
       if GameState.vitality < 2 then
@@ -106,7 +94,7 @@ function _turnSucceeded()
    Timer:turnSucceeded()
    GameState:turnSucceeded()
    Target:next()
-   Circloid._scale = 1.1
+   Circloid:bumpScale()
    Particles:greenBurst()
    Particles:playerMatched(Player.rayPosition, Player.rayCount)
    if GameState.vitality == GameState.MAX_VITALITY then
@@ -125,14 +113,14 @@ function _drawGame()
    love.graphics.setColor(1, 1, 1, 1)
    local centerX = GameState.viewport.width * 0.5
    local centerY = GameState.viewport.height * 0.5
-   local radius = Circloid._radiusToDraw
+   local radius = Circloid:getRadius()
    local scoreStr = tostring(GameState.score)
    local scoreWidth = bigFont:getWidth(scoreStr)
    
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
    love.graphics.print(scoreStr, -scoreWidth * 0.5, -bigFont:getHeight() * 0.5)
-   love.graphics.scale(Circloid._scale, Circloid._scale)
+   love.graphics.scale(Circloid:getScale(), Circloid:getScale())
    Player:draw(radius)
    Target:draw(radius)
    Timer:draw(radius)
@@ -163,24 +151,4 @@ function _loadFont()
    for index, fontSize in pairs({ 16, 48 }) do
       GameState.font[fontSize] = love.graphics.newFont("x14y24pxHeadUpDaisy.ttf", fontSize)
    end
-end
-
-function Circloid:reset()
-   self._radiusToDraw = GameState:getRadius()
-   self._scale = 1
-end
-
-function Circloid:shakeCamera()
-   local radius = 12
-   local angle = math.random() * math.pi * 2
-   self._cameraOffset.x = radius * math.cos(angle)
-   self._cameraOffset.y = radius * math.cos(angle)
-end
-
-function Circloid:update(dt)
-   self._radiusToDraw = self._radiusToDraw + (GameState:getRadius() - self._radiusToDraw) * 0.25
-   self._cameraVelocity.x = self._cameraVelocity.x + (self._cameraOffset.x * -0.91)
-   self._cameraVelocity.y = self._cameraVelocity.y + (self._cameraOffset.y * -0.91)
-   self._cameraOffset.x = 0.88 * (self._cameraOffset.x + self._cameraVelocity.x)
-   self._cameraOffset.y = 0.88 * (self._cameraOffset.y + self._cameraVelocity.y)
 end
