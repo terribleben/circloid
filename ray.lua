@@ -1,6 +1,15 @@
-Ray = {}
+local Circloid = require 'circloid'
 
-function Ray.drawSet(position, count, majorRadii, minorRadii, pointerStyle, width)
+local Ray = {
+   TOGGLE = {
+      NONE = 0,
+      ALL = 1,
+      ALL_BUT_POINTER = 2,
+   },
+}
+
+function Ray.drawSet(position, count, majorRadii, minorRadii, pointerStyle, width, toggle)
+   local isToggle = Circloid:getToggle()
    local initialAngle = ((math.pi * 2) / 12) * position
    local incrementalAngle = ((math.pi * 2) / count)
    love.graphics.push()
@@ -9,6 +18,9 @@ function Ray.drawSet(position, count, majorRadii, minorRadii, pointerStyle, widt
       local radii
       if idx == 0 then
          radii = majorRadii
+         if isToggle and toggle == Ray.TOGGLE.ALL then
+            love.graphics.setColor(1, 0, 0, 1)
+         end
          if pointerStyle == "outer" then
             Ray._drawOuterPointer(radii.outer)
          elseif pointerStyle == "inner" then
@@ -16,6 +28,9 @@ function Ray.drawSet(position, count, majorRadii, minorRadii, pointerStyle, widt
          end
       else
          radii = minorRadii
+         if isToggle and toggle ~= Ray.TOGGLE.NONE then
+            love.graphics.setColor(1, 0, 0, 1)
+         end
       end
       if width ~= nil and width > 1 then
          love.graphics.rectangle("fill", radii.inner, width * -0.5, radii.outer - radii.inner, width)

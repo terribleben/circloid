@@ -5,6 +5,9 @@ local Circloid = {
    _cameraOffset = { x = 0, y = 0 },
    _cameraVelocity = { x = 0, y = 0 },
    _scale = 1,
+   _toggle = false,
+   _toggleTimer = 0.2,
+   _TOGGLE_MAX_TIME = 0.2,
 }
 
 function Circloid:reset()
@@ -18,6 +21,10 @@ end
 
 function Circloid:getScale()
    return self._scale
+end
+
+function Circloid:getToggle()
+   return self._toggle
 end
 
 function Circloid:bumpScale()
@@ -37,6 +44,11 @@ function Circloid:update(dt)
       if math.abs(1 - self._scale) < 0.01 then
          self._scale = 1
       end
+   end
+   self._toggleTimer = self._toggleTimer - dt
+   if self._toggleTimer <= 0 then
+      self._toggleTimer = self._TOGGLE_MAX_TIME
+      self._toggle = not self._toggle
    end
    self._radiusToDraw = self._radiusToDraw + (GameState:getRadius() - self._radiusToDraw) * 0.25
    self._cameraVelocity.x = self._cameraVelocity.x + (self._cameraOffset.x * -0.91)

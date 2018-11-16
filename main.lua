@@ -5,6 +5,7 @@ local GameState = require 'gamestate'
 local Player = require 'player'
 local Target = require 'target'
 local Particles = require 'particles'
+local Ray = require 'ray'
 local Timer = require 'timer'
 local Menu = require 'menu'
 
@@ -116,13 +117,21 @@ function _drawGame()
    local radius = Circloid:getRadius()
    local scoreStr = tostring(GameState.score)
    local scoreWidth = bigFont:getWidth(scoreStr)
+   local toggleMode = Ray.TOGGLE.ALL
+   local targetConfig = Target:getConfiguration()
+   if Player.rayPosition == targetConfig.rayPosition then
+      toggleMode = Ray.TOGGLE.ALL_BUT_POINTER
+      if Player.rayCount == targetConfig.rayCount then
+         toggleMode = Ray.TOGGLE.NONE
+      end
+   end
    
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
    love.graphics.print(scoreStr, -scoreWidth * 0.5, -bigFont:getHeight() * 0.5)
    love.graphics.scale(Circloid:getScale(), Circloid:getScale())
    Player:draw(radius)
-   Target:draw(radius)
+   Target:draw(radius, toggleMode)
    Timer:draw(radius)
    love.graphics.pop()
 

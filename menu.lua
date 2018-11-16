@@ -1,10 +1,10 @@
-GameState = require 'gamestate'
-Player = require 'player'
-Particles = require 'particles'
-Background = require 'background'
-HiScore = require 'hiscore'
+local GameState = require 'gamestate'
+local Player = require 'player'
+local Particles = require 'particles'
+local Background = require 'background'
+local HiScore = require 'hiscore'
 
-Menu = {
+local Menu = {
    _state = "init",
    _targetLabel = "",
    _centerLabel = "",
@@ -73,9 +73,16 @@ function Menu:_drawRays(radius)
    love.graphics.push("all")
    love.graphics.setLineWidth(3)
    love.graphics.setColor(0, 1, 1, 1)
-   local minorRadii = { inner = radius, outer = radius * 1.2 }
-   local majorRadii = { inner = radius * 0.4, outer = radius * 1.2 }
-   Ray.drawSet(self._rayPosition, self._rayCount, majorRadii, minorRadii, "inner")
+   local minorRadii = { inner = radius * 0.75, outer = radius }
+   local majorRadii = { inner = radius * 0.4, outer = radius }
+   local toggleMode = Ray.TOGGLE.ALL
+   if Player.rayPosition == self._rayPosition then
+      toggleMode = Ray.TOGGLE.ALL_BUT_POINTER
+      if Player.rayCount == self._rayCount then
+         toggleMode = Ray.TOGGLE.NONE
+      end
+   end
+   Ray.drawSet(self._rayPosition, self._rayCount, majorRadii, minorRadii, "inner", nil, toggleMode)
    love.graphics.pop()
 end
 

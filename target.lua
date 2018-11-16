@@ -1,5 +1,5 @@
-GameState = require 'gamestate'
-Ray = require 'ray'
+local GameState = require 'gamestate'
+local Ray = require 'ray'
 
 Target = {
    NEXT_CONFIG_BUFFER = 4,
@@ -28,7 +28,7 @@ function Target:getConfiguration()
    return self._configurations[self._nextConfigIndex]
 end
 
-function Target:draw(radius)
+function Target:draw(radius, toggleMode)
    love.graphics.push("all")
 
    for index, configuration in pairs(self._configurations) do
@@ -36,9 +36,10 @@ function Target:draw(radius)
       if index == self._nextConfigIndex then
          love.graphics.setLineWidth(3)
          love.graphics.setColor(0, 1, 1, 1)
-         minorRadii = { inner = radius, outer = radius * 1.2 }
-         majorRadii = { inner = radius * 0.4, outer = radius * 1.2 }
+         minorRadii = { inner = radius * 0.75, outer = radius }
+         majorRadii = { inner = radius * 0.4, outer = radius }
          pointerStyle = "inner"
+         Ray.drawSet(configuration.rayPosition, configuration.rayCount, majorRadii, minorRadii, pointerStyle, nil, toggleMode)
       else
          local orbit = (index - self._nextConfigIndex + 1)
          local maxOrbit = (self._lastConfigIndex - self._nextConfigIndex + 1)
@@ -54,7 +55,7 @@ function Target:draw(radius)
          pointerStyle = nil
          love.graphics.circle("line", 0, 0, minorRadii.outer)
       end
-      Ray.drawSet(configuration.rayPosition, configuration.rayCount, majorRadii, minorRadii, pointerStyle)
+      
    end
    love.graphics.pop()
 end
