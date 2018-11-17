@@ -58,6 +58,7 @@ function love.update(dt)
    Background:update(dt)
    Particles:update(dt)
    Circloid:update(dt)
+   Player:update(dt)
    if GameState.state == "game" then
       if GameState.vitality < 2 then
          Particles:maybeDanger()

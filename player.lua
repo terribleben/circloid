@@ -5,10 +5,17 @@ Ray = require 'ray'
 Player = {
    rayPosition = 0,
    rayCount = 1,
+   _recoilAngle = 0,
+   _recoilAngularVelocity = 0,
+   _recoilRadius = 0,
+   _recoilRadialVelocity = 0,
 }
 
 function Player:reset()
-   -- nothing here
+   self._recoilAngle = 0
+   self._recoilAngularVelocity = 0
+   self._recoilRadius = 0
+   self._recoilRadialVelocity = 0
 end
 
 function Player:rotateClockwise()
@@ -17,6 +24,7 @@ function Player:rotateClockwise()
    if self.rayPosition > 11 then
       self.rayPosition = 0
    end
+   self._recoilAngularVelocity = 0.015
 end
 
 function Player:rotateCounter()
@@ -25,6 +33,7 @@ function Player:rotateCounter()
    if self.rayPosition < 0 then
       self.rayPosition = 11
    end
+   self._recoilAngularVelocity = -0.015
 end
 
 function Player:addRay()
@@ -32,6 +41,7 @@ function Player:addRay()
    if self.rayCount > 6 then
       self.rayCount = 6
    end
+   self._recoilRadialVelocity = 0.02
 end
 
 function Player:subtractRay()
@@ -39,6 +49,16 @@ function Player:subtractRay()
    if self.rayCount < 1 then
       self.rayCount = 1
    end
+   self._recoilRadialVelocity = -0.02
+end
+
+function Player:update(dt)
+   self._recoilAngle = self._recoilAngle + self._recoilAngularVelocity
+   self._recoilAngularVelocity = self._recoilAngularVelocity + (self._recoilAngle * -0.4)
+   self._recoilAngularVelocity = self._recoilAngularVelocity * 0.6
+   self._recoilRadius = self._recoilRadius + self._recoilRadialVelocity
+   self._recoilRadialVelocity = self._recoilRadialVelocity + (self._recoilRadius * -0.4)
+   self._recoilRadialVelocity = self._recoilRadialVelocity * 0.6
 end
 
 function Player:draw(radius)
@@ -61,6 +81,8 @@ function Player:draw(radius)
    love.graphics.circle("line", 0, 0, radius)
    local minorRadii = { inner = radius * 1.2, outer = radius * 1.5 }
    local majorRadii = { inner = radius * 0.8, outer = radius * 1.6 }
+   love.graphics.scale(1 + self._recoilRadius, 1 + self._recoilRadius)
+   love.graphics.rotate(self._recoilAngle)
    Ray.drawSet(self.rayPosition, self.rayCount, majorRadii, minorRadii, "outer");
    love.graphics.pop()
 end
