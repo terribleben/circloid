@@ -28,13 +28,13 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
    Background:keypressed(key)
-   if key == "a" then
+   if key == "a" or key == "left" then
       Player:rotateCounter()
-   elseif key == "d" then
+   elseif key == "d" or key == "right" then
       Player:rotateClockwise()
-   elseif key == "w" then
+   elseif key == "w" or key == "up" then
       Player:addRay()
-   elseif key == "s" then
+   elseif key == "s" or key == "down" then
       Player:subtractRay()
    end
 

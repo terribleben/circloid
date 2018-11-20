@@ -13,9 +13,9 @@ Background = {
 }
 
 function Background:keypressed(key)
-   if key == "a" then
+   if key == "a" or key == "left" then
       self._scrollIndexTarget = self._scrollIndexTarget - 1
-   elseif key == "d" then
+   elseif key == "d" or key == "right" then
       self._scrollIndexTarget = self._scrollIndexTarget + 1
    end
 end

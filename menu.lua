@@ -17,7 +17,7 @@ function Menu:reset()
    if GameState.state == "init" then
       self._state = "init"
       self._targetLabel = "ready?"
-      self._centerLabel = "WASD"
+      self._centerLabel = "CIRCLOID"
       self._rayPosition = 7
       self._rayCount = 3
    else
@@ -29,7 +29,7 @@ end
 
 function Menu:draw()
    love.graphics.setColor(1, 1, 1, 1)
-   local smallFont = GameState.font[16]
+   local smallFont, bigFont = GameState.font[16], GameState.font[48]
    love.graphics.setFont(smallFont)
    local centerX = GameState.viewport.width * 0.5
    local centerY = GameState.viewport.height * 0.5
@@ -56,6 +56,21 @@ function Menu:draw()
          GameState.viewport.height - 10 - smallFont:getHeight()
       )
    end
+
+   if Menu._state == "init" then
+      love.graphics.setFont(bigFont)
+      local instructions
+      if Player.rayPosition == Menu._rayPosition then
+         instructions = "up/down to match"
+      else
+         instructions = "left/right to rotate"
+      end
+      love.graphics.print(
+         instructions,
+         GameState.viewport.width * 0.5 - bigFont:getWidth(instructions) * 0.5,
+         GameState.viewport.height - 32 - bigFont:getHeight()
+      )
+   end
    
    Particles:draw()
 end
@@ -73,8 +88,8 @@ function Menu:_drawRays(radius)
    love.graphics.push("all")
    love.graphics.setLineWidth(3)
    love.graphics.setColor(0, 1, 1, 1)
-   local minorRadii = { inner = radius * 0.75, outer = radius }
-   local majorRadii = { inner = radius * 0.4, outer = radius }
+   local minorRadii = { inner = radius * 0.75, outer = radius - 16 }
+   local majorRadii = { inner = radius * 0.4, outer = radius + 16 }
    local toggleMode = Ray.TOGGLE.ALL
    if Player.rayPosition == self._rayPosition then
       toggleMode = Ray.TOGGLE.ALL_BUT_POINTER
@@ -82,7 +97,7 @@ function Menu:_drawRays(radius)
          toggleMode = Ray.TOGGLE.NONE
       end
    end
-   Ray.drawSet(self._rayPosition, self._rayCount, majorRadii, minorRadii, "inner", nil, toggleMode)
+   Ray.drawSet(self._rayPosition, self._rayCount, majorRadii, minorRadii, "outer", nil, toggleMode)
    love.graphics.pop()
 end
 

@@ -44,20 +44,23 @@ end
 
 function Ray._drawOuterPointer(radius)
    local vertices = {
-      radius, -8,
-      radius, 8,
-      radius + 8, 0,
+      radius, -12,
+      radius, 12,
+      radius + 12, 0,
    }
    love.graphics.polygon("line", vertices)
+   --love.graphics.arc("line", radius + 8, 0, 8, math.pi * 0.5, math.pi * 1.5, 10)
+   --love.graphics.circle("line", radius + 16, 0, 16, 10)
 end
 
 function Ray._drawInnerPointer(radius)
    local vertices = {
-      radius, 8,
-      radius, -8,
-      radius - 8, 0,
+      radius, 12,
+      radius, -12,
+      radius - 12, 0,
    }
    love.graphics.polygon("line", vertices)
+   --love.graphics.circle("line", radius - 16, 0, 16, 10)
 end
 
 return Ray

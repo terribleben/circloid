@@ -80,10 +80,10 @@ function Player:draw(radius)
    end
    love.graphics.circle("line", 0, 0, radius)
    local minorRadii = { inner = radius * 1.2, outer = radius * 1.5 }
-   local majorRadii = { inner = radius * 0.8, outer = radius * 1.6 }
+   local majorRadii = { inner = radius + 40, outer = radius * 1.8 }
    love.graphics.scale(1 + self._recoilRadius, 1 + self._recoilRadius)
    love.graphics.rotate(self._recoilAngle)
-   Ray.drawSet(self.rayPosition, self.rayCount, majorRadii, minorRadii, "outer");
+   Ray.drawSet(self.rayPosition, self.rayCount, majorRadii, minorRadii, "inner");
    love.graphics.pop()
 end
 

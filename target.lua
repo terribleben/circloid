@@ -36,9 +36,9 @@ function Target:draw(radius, toggleMode)
       if index == self._nextConfigIndex then
          love.graphics.setLineWidth(3)
          love.graphics.setColor(0, 1, 1, 1)
-         minorRadii = { inner = radius * 0.75, outer = radius }
-         majorRadii = { inner = radius * 0.4, outer = radius }
-         pointerStyle = "inner"
+         minorRadii = { inner = radius * 0.75, outer = radius - 16 }
+         majorRadii = { inner = radius * 0.4, outer = radius + 16 }
+         pointerStyle = "outer"
          Ray.drawSet(configuration.rayPosition, configuration.rayCount, majorRadii, minorRadii, pointerStyle, nil, toggleMode)
       else
          local orbit = (index - self._nextConfigIndex + 1)
