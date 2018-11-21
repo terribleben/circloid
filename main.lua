@@ -129,7 +129,7 @@ function _drawGame()
    
    love.graphics.push()
    love.graphics.translate(centerX, centerY)
-   love.graphics.print(scoreStr, -scoreWidth * 0.5, -bigFont:getHeight() * 0.5)
+   love.graphics.print(scoreStr, -scoreWidth * 0.5, -3 + (-bigFont:getHeight() * 0.5))
    love.graphics.scale(Circloid:getScale(), Circloid:getScale())
    Player:draw(radius)
    Target:draw(radius, toggleMode)

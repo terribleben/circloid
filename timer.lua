@@ -1,6 +1,6 @@
-GameState = require 'gamestate'
+local GameState = require 'gamestate'
 
-Timer = {
+local Timer = {
    _timeRemaining = 0,
    _timeScale = 1,
 
@@ -33,6 +33,19 @@ function Timer:isExpired()
 end
 
 function Timer:draw(radius)
+   local scale = self._timeRemaining / self.MAX_TIME_REMAINING
+   local timerRadius = 42 + ((radius - 42) * (1.0 - scale))
+   local alpha
+   if timerRadius < 62 then
+      alpha = (timerRadius - 42) / 20
+   else
+      alpha = 1
+   end
+   love.graphics.setColor(0.7, 0.7, 0.7, alpha)
+   love.graphics.circle("line", 0, 0, timerRadius)
+end
+
+function Timer:drawConcentric(radius)
    local maxRadius = radius * 0.95
 
    local maxNumUnits = 7

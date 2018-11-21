@@ -1,8 +1,8 @@
-GameState = require 'gamestate'
-Particles = require 'particles'
-Ray = require 'ray'
+local GameState = require 'gamestate'
+local Particles = require 'particles'
+local Ray = require 'ray'
 
-Player = {
+local Player = {
    rayPosition = 0,
    rayCount = 1,
    _recoilAngle = 0,
@@ -78,7 +78,16 @@ function Player:draw(radius)
       love.graphics.setLineWidth(2)
       love.graphics.setColor(1, 1, 0, 1)
    end
-   love.graphics.circle("line", 0, 0, radius)
+   local i = 1
+   repeat
+      love.graphics.push("all")
+      if i > 1 then
+         love.graphics.setColor(1, 1, 0, 0.6)
+      end
+      love.graphics.circle("line", 0, 0, radius - (16 * (i - 1)))
+      i = i + 1
+      love.graphics.pop()
+   until i > math.floor(GameState.vitality)
    local minorRadii = { inner = radius * 1.2, outer = radius * 1.5 }
    local majorRadii = { inner = radius + 40, outer = radius * 1.8 }
    love.graphics.scale(1 + self._recoilRadius, 1 + self._recoilRadius)
