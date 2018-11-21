@@ -32,7 +32,7 @@ function Circloid:bumpScale()
 end
 
 function Circloid:shakeCamera()
-   local radius = 12
+   local radius = 16
    local angle = math.random() * math.pi * 2
    self._cameraOffset.x = radius * math.cos(angle)
    self._cameraOffset.y = radius * math.cos(angle)

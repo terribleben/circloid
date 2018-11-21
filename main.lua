@@ -23,7 +23,10 @@ end
 function love.draw()
    Background:draw()
    local drawFunc = gDrawFuncs[GameState.state]
+   love.graphics.push()
+   love.graphics.translate(Circloid._cameraOffset.x, Circloid._cameraOffset.y)
    drawFunc()
+   love.graphics.pop()
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -77,6 +80,7 @@ function _turnFailed()
    GameState:turnFailed()
    Particles:redBurst()
    Circloid:shakeCamera()
+   Background:turnFailed()
    if GameState.vitality <= 0 then
       if GameState.state ~= "end" then
          GameState.state = "end"
@@ -110,7 +114,6 @@ function _drawGame()
    love.graphics.push()
    local bigFont = GameState.font[48]
    love.graphics.setFont(bigFont)
-   love.graphics.translate(Circloid._cameraOffset.x, Circloid._cameraOffset.y)
    
    love.graphics.setColor(1, 1, 1, 1)
    local centerX = GameState.viewport.width * 0.5

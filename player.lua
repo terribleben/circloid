@@ -64,10 +64,10 @@ end
 function Player:draw(radius)
    love.graphics.push("all")
    if GameState.vitality <= 1 and math.random() < 0.4 then
-      love.graphics.setLineWidth(4)
+      love.graphics.setLineWidth(6)
       if math.random() < 0.8 then
          love.graphics.setColor(1, 0, 0, 1)
-         love.graphics.translate(math.random(-4, 4), math.random(-4, 4))
+         love.graphics.translate(math.random(-5, 5), math.random(-5, 5))
       else
          love.graphics.translate(math.random(-12, 12), math.random(-12, 12))
          love.graphics.setColor(1, 0, 0, 0.5)

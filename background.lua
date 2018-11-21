@@ -9,7 +9,9 @@ Background = {
    _messageTTL = 0,
    
    _messageVariants = { "", "", "", "" },
-   _scrollCoeffs = { 1.3, -0.5, 2, -2, 0.1, 1 }
+   _scrollCoeffs = { 1.3, -0.5, 2, -2, 0.1, 1 },
+
+   _damageTimer = 0,
 }
 
 function Background:keypressed(key)
@@ -18,6 +20,10 @@ function Background:keypressed(key)
    elseif key == "d" or key == "right" then
       self._scrollIndexTarget = self._scrollIndexTarget + 1
    end
+end
+
+function Background:turnFailed()
+   self._damageTimer = 1.5
 end
 
 function Background:update(dt)
@@ -44,6 +50,9 @@ function Background:update(dt)
          self._messageTTL = 0
          self._isMessagePersistent = false
       end
+   end
+   if self._damageTimer > 0 then
+      self._damageTimer = self._damageTimer - dt
    end
 end
 
@@ -90,7 +99,6 @@ function Background:draw()
       while y > 0 do
          y = y - spacing
       end
-      love.graphics.setColor(0.4, 0.4, 0.4, 1)
       while y < GameState.viewport.height do
          self:_drawBox(index, x, y, height)
          y = y + spacing
@@ -103,13 +111,28 @@ end
 
 function Background:_drawBox(index, x, y, height)
    local smallFont = GameState.font[16]
-   love.graphics.rectangle("line", x + 10, y, GameState.viewport.width * 0.18, height)
+   local isDamaged = false
+   if self._damageTimer > 0 and math.random() < self._damageTimer * 1.2 then
+      isDamaged = true
+   end
+   if isDamaged then
+      love.graphics.setColor(0.3, 0, 0, 1)
+      love.graphics.rectangle("fill", x + 10, y, GameState.viewport.width * 0.18, height)
+   else
+      love.graphics.setColor(0.4, 0.4, 0.4, 1)
+      love.graphics.rectangle("line", x + 10, y, GameState.viewport.width * 0.18, height)
+   end
    if self._message ~= "" then
       local messageToPrint
       if math.abs(self._scrollIndexVelocity) < 0.1 then
          messageToPrint = self._messageVariants[1 + (index % 4)]
       else
          messageToPrint = "?????"
+      end
+      if isDamaged then
+         love.graphics.setColor(0, 0, 0, 1)
+      else
+         love.graphics.setColor(0.4, 0.4, 0.4, 1)
       end
       love.graphics.print(messageToPrint, x + 22, y + height * 0.5 - smallFont:getHeight() * 0.5)
    end
