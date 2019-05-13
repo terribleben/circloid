@@ -10,7 +10,6 @@ local Menu = {
    _centerLabel = "",
    _rayPosition = 0,
    _rayCount = 1,
-   _hiscore = 0,
 }
 
 function Menu:reset()
@@ -24,7 +23,6 @@ function Menu:reset()
       self._centerLabel = "GAME OVER"
       self:_setReadyState(true)
    end
-   self._hiscore = HiScore:get()
 end
 
 function Menu:draw()
@@ -48,8 +46,9 @@ function Menu:draw()
    love.graphics.print(Menu._targetLabel, (radius * 1.2) + 7, smallFont:getHeight() * -0.5)
    love.graphics.pop()
 
-   if Menu._hiscore then
-      local hiscoreText = "HI SCORE " .. tostring(Menu._hiscore)
+   local hiscore = HiScore:get()
+   if hiscore > 0 then
+      local hiscoreText = "HI SCORE " .. tostring(hiscore)
       love.graphics.print(
          hiscoreText,
          GameState.viewport.width - 10 - smallFont:getWidth(hiscoreText),
