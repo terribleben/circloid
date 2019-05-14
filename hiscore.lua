@@ -7,7 +7,7 @@ local HISCORE_STORAGE_KEY = 'hiscore'
 function HiScore:load()
    network.async(function()
          local hiScore = castle.storage.get(HISCORE_STORAGE_KEY)
-         if not hiScore == nil then
+         if not (hiScore == nil) then
             self._score = hiScore
          end
    end)
